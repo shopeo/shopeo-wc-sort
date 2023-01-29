@@ -33,7 +33,7 @@ function shopeo_wc_sort_meta_box_html( $post ) {
 	?>
     <label for="shopeo_wc_sort_order">Order</label>
     <input id="shopeo_wc_sort_order" type="number" style="margin-top: 5px;width: 100%;" min="0"
-           name="shopeo_wc_sort_order" value="<?php echo $value ?? 0; ?>">
+           name="shopeo_wc_sort_order" value="<?php echo $value > 0 ? $value : 0; ?>">
 	<?php
 }
 
@@ -58,4 +58,14 @@ add_action( 'save_post', function ( $post_id ) {
 		);
 	}
 } );
+
+add_action( 'woocommerce_product_query', function ( $q ) {
+	if ( ! isset( $_GET['orderby'] ) ) {
+		$q->set( 'orderby', 'meta_value_num' );
+		$q->set( 'order', 'DESC' );
+		$q->set( 'meta_key', 'shopeo_wc_sort_order' );
+	}
+} );
+
+
 
